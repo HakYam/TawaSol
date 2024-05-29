@@ -1,5 +1,5 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const config = require('config');
 
 const auth = (req, res, next) => {
     const token = req.header('x-auth-token'); // the header will be x-auth-token in react
@@ -7,7 +7,12 @@ const auth = (req, res, next) => {
         return res.status(401).json({ msg: 'No token, authorization denied' }); // 401 unauthorized
     }
     try {
-        const decoded = jwt.verify(token, config.get('jwtSecret'), (error, decoded) => { // it should be the same key for sign and verify
+        const jwtSecret = process.env.VITE_JWT_SECRET;
+        if (!jwtSecret) {
+            throw new Error("JWT secret is missing!");
+        }
+
+        jwt.verify(token, jwtSecret, (error, decoded) => { // it should be the same key for sign and verify
             if (error) {
                 return res.status(401).json({ msg: 'Token is not valid' }); 
             } else {
@@ -20,6 +25,6 @@ const auth = (req, res, next) => {
         console.error(err.message);
         res.status(401).json({ msg: 'Token is not valid' });
     }
-}
+};
 
-module.exports = {auth}; // {} to export multi functions
+module.exports = { auth }; // {} to export multi functions
