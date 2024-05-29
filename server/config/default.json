@@ -1,0 +1,5 @@
+{
+    "mongoConnectionString" : "mongodb+srv://alirahabi:rvTlOa6Zh0EN7WS2@hakyamcluster.prwss72.mongodb.net/Tawasol?retryWrites=true&w=majority&appName=HakYamCluster",
+    "jwtSecret" : "HakYam"
+}
+
