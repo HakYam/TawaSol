@@ -1,5 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 
 const auth = (req, res, next) => {
     const token = req.header('x-auth-token'); // the header will be x-auth-token in react
@@ -27,4 +28,16 @@ const auth = (req, res, next) => {
     }
 };
 
-module.exports = { auth }; // {} to export multi functions
+// multer middleware
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'public/images')
+    },
+    filename: function (req, file, cb) {
+      cb(null, `${req.user.id}`)
+    }
+  })
+  
+  const upload = multer({ storage: storage }).single('');
+
+module.exports = { auth, upload }; // {} to export multi functions
