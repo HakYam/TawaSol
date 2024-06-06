@@ -6,6 +6,10 @@ import './App.css';
 import store from './redux/store';
 import { Provider } from 'react-redux';
 import Register from './components/users/Register';
+import Login from './components/users/Login';
+import Private from './components/Private';
+import Home from './components/Home'
+
 
 
 
@@ -23,6 +27,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/home" element={<Private component={Home} />} />
             </Routes>
           </div>
         </Router>
