@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-app.use(cors()); // تفعيل CORS لجميع النطاقات
+app.use(cors()); //  CORS to access server from client = outside server
 
 app.use(express.json()); // for parsing body req to json
 

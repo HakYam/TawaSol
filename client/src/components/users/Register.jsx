@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import { register } from "../../redux/modules/users";
-import { showAlertMessage } from "../../redux/modules/alerts";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -18,41 +17,29 @@ const Register = () => {
 
     const dispatch = useDispatch();
     const isAuthenticated = useSelector((state) => state.users.isAuthenticated);
-    const alert = useSelector((state) => state.alerts);
-
-    useEffect(() => {
-        if (alert.show) {
-            const toastTypes = {
-                error: toast.error,
-                success: toast.success,
-                info: toast.info,
-                warning: toast.warn,
-                default: toast
-            };
-    
-            const showToast = toastTypes[alert.type] || toastTypes.default;
-            showToast(alert.msg);
-        }
-    }, [alert]);
-    
 
     const onChange = (e) => {
-        return setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const validateEmail = (email) => {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(String(email).toLowerCase());
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const onSubmit = async (e) => {
         e.preventDefault();
         if (password !== password2) {
-            dispatch(showAlertMessage({ msg: "Passwords do not match", type: "error" }));
-        } else if (!validateEmail(email)) {
-            dispatch(showAlertMessage({ msg: "Invalid email address", type: "error" }));
+            toast.error("Passwords do not match");
         } else {
-            dispatch(register({ name, email, password }));
+            try {
+                await dispatch(register({ name, email, password })).unwrap();
+                toast.success("Registration successful");
+            } catch (error) {
+                // هنا نعرض جميع رسائل الأخطاء القادمة من الخادم
+                if (error.errors) {
+                    error.errors.forEach(err => {
+                        toast.error(err.msg); // عرض رسالة الخطأ باستخدام toast
+                    });
+                } else {
+                    toast.error("Registration failed"); // عرض رسالة خطأ عامة في حالة عدم وجود تفاصيل
+                }
+            }
         }
     };
 

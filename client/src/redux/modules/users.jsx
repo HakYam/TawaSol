@@ -2,26 +2,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { api, setAuthToken } from '../../utils';
 import { showAlertMessage } from './alerts';
 
-//thunks - async actions.
-
-/* 
-const action = createAsyncThunk('slice/action', async (inputParameters, thunkAPI) => {
-  your async logic here
-}); 
-*/
-
 export const loadUser = createAsyncThunk('users/loadUser', async (_, { rejectWithValue }) => {
   try {
     const res = await api.get('/users');
     return res.data;
   } catch (error) {
-    return rejectWithValue();
+    return rejectWithValue(error.response.data);
   }
 });
 
 export const register = createAsyncThunk('users/register', async (formData, { dispatch, rejectWithValue }) => {
   try {
     const res = await api.post('/users/register', formData);
+    setAuthToken(res.data.token); // set token after successful login
     dispatch(loadUser());
     return res.data;
   } catch (error) {
@@ -31,13 +24,14 @@ export const register = createAsyncThunk('users/register', async (formData, { di
         dispatch(showAlertMessage(err.msg, 'error'));
       });
     }
-    return rejectWithValue();
+    return rejectWithValue(error.response.data);
   }
 });
 
 export const login = createAsyncThunk('users/login', async ({ email, password }, { dispatch, rejectWithValue }) => {
   try {
     const res = await api.post('/users/login', { email, password });
+    setAuthToken(res.data.token); // تعيين التوكن بعد تسجيل الدخول بنجاح
     dispatch(loadUser());
     return res.data;
   } catch (error) {
@@ -47,7 +41,7 @@ export const login = createAsyncThunk('users/login', async ({ email, password },
         dispatch(showAlertMessage(err.msg, 'error'));
       });
     }
-    return rejectWithValue();
+    return rejectWithValue(error.response.data);
   }
 });
 
@@ -56,7 +50,6 @@ export const logout = createAsyncThunk('users/logout', async (_, { dispatch }) =
   dispatch(userSlice.actions.logoutSuccess());
 });
 
-// create user slice
 const userSlice = createSlice({
   name: 'users',
   initialState: {
@@ -73,7 +66,6 @@ const userSlice = createSlice({
       state.user = null;
     }
   },
-  // any reducer deal with createAsyncThunk should be as extra reducer 
   extraReducers: (builder) => {
     builder
       .addCase(loadUser.fulfilled, (state, action) => {
@@ -90,7 +82,7 @@ const userSlice = createSlice({
         state.isAuthenticated = true;
         state.loading = false;
       })
-      .addCase(register.rejected, (state) => {
+      .addCase(register.rejected, (state, action) => {
         setAuthToken();
         state.token = null;
         state.isAuthenticated = false;
@@ -102,7 +94,7 @@ const userSlice = createSlice({
         state.isAuthenticated = true;
         state.loading = false;
       })
-      .addCase(login.rejected, (state) => {
+      .addCase(login.rejected, (state, action) => {
         setAuthToken();
         state.token = null;
         state.isAuthenticated = false;
