@@ -1,6 +1,7 @@
 // server.js
 require('dotenv').config();
 const express = require("express");
+const cors = require('cors'); // استيراد حزمة cors
 const connectDB = require("./config/db");
 
 const app = express();
@@ -8,6 +9,8 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB();
+
+app.use(cors()); // تفعيل CORS لجميع النطاقات
 
 app.use(express.json()); // for parsing body req to json
 

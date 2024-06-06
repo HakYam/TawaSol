@@ -5,25 +5,28 @@ import Navbar from './components/Navbar';
 import './App.css';
 import store from './redux/store';
 import { Provider } from 'react-redux';
+import Register from './components/users/Register';
+
 
 
 function App() {
 
   return (
     // fragment  is better than div because it is faster, it will not render like div
-    <> 
-    <Provider store={store}>
-    <Router>
-      <div>
-        {/* navbar top of routes */}
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-
-        </Routes>
-      </div>
-    </Router>
-    </Provider>
+    <>
+      <Provider store={store}>
+        <Router>
+          <div>
+            {/* navbar top of routes */}
+            <Navbar />
+              
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/register" element={<Register />} />
+            </Routes>
+          </div>
+        </Router>
+      </Provider>
     </>
   );
 }
