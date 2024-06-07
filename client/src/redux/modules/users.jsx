@@ -14,7 +14,7 @@ export const loadUser = createAsyncThunk('users/loadUser', async (_, { rejectWit
 export const register = createAsyncThunk('users/register', async (formData, { dispatch, rejectWithValue }) => {
   try {
     const res = await api.post('/users/register', formData);
-    setAuthToken(res.data.token); // set token after successful login
+    setAuthToken(res.data.token);
     dispatch(loadUser());
     return res.data;
   } catch (error) {
@@ -31,7 +31,7 @@ export const register = createAsyncThunk('users/register', async (formData, { di
 export const login = createAsyncThunk('users/login', async ({ email, password }, { dispatch, rejectWithValue }) => {
   try {
     const res = await api.post('/users/login', { email, password });
-    setAuthToken(res.data.token); // تعيين التوكن بعد تسجيل الدخول بنجاح
+    setAuthToken(res.data.token);
     dispatch(loadUser());
     return res.data;
   } catch (error) {
@@ -75,27 +75,24 @@ const userSlice = createSlice({
       })
       .addCase(loadUser.rejected, (state) => {
         state.loading = false;
+        state.isAuthenticated = false;
       })
       .addCase(register.fulfilled, (state, action) => {
-        setAuthToken(action.payload.token);
         state.token = action.payload.token;
         state.isAuthenticated = true;
         state.loading = false;
       })
-      .addCase(register.rejected, (state, action) => {
-        setAuthToken();
+      .addCase(register.rejected, (state) => {
         state.token = null;
         state.isAuthenticated = false;
         state.loading = false;
       })
       .addCase(login.fulfilled, (state, action) => {
-        setAuthToken(action.payload.token);
         state.token = action.payload.token;
         state.isAuthenticated = true;
         state.loading = false;
       })
-      .addCase(login.rejected, (state, action) => {
-        setAuthToken();
+      .addCase(login.rejected, (state) => {
         state.token = null;
         state.isAuthenticated = false;
         state.loading = false;

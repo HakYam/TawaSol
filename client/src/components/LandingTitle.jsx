@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../components/styles/TitleRotator.css'; // تأكد من استيراد ملف CSS الخاص بالتأثيرات
 
-const TitleRotator = () => {
+const LandingTitle = () => {
     const titles = [
       "Boost Your Coding Skills!",
       "Join Our Developer Community",
@@ -29,4 +29,4 @@ const TitleRotator = () => {
     );
   }
   
-  export default TitleRotator;
+  export default LandingTitle;

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-//import { getCurrentProfile } from "../redux/modules/profiles";
+import { getCurrentProfile } from "../redux/modules/profiles";
 import { getProfileImage } from "../utils";
 import defaultImg from "../assets/default.png";
 
